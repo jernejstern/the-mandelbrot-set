@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            mandelbrot interactive
+        </title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <canvas id='canvas' width="1600" height="800" onclick="povecaj()" onmousemove="getMousePos(canvas,event)"></canvas>
+        <script>
+            var mouseX,mouseY;
+            
+            function getMousePos(canvas, evt) {
+                var rect = canvas.getBoundingClientRect();
+                mouseX = evt.clientX - rect.left
+                mouseY = evt.clientY - rect.bottom
+                
+                document.getElementById('debugger').innerHTML=((mouseX-800)/400)+"//"+((mouseY+400)/-400);
+                return mouseX,mouseY;
+            }
+  
+            
+
+            
+            
+            function pokazi(t,w,h){
+                var ctx,i,j,light;
+                var cvs = document.getElementById('canvas');
+                cvs.width=w;
+                cvs.height=h;
+                document.body.appendChild(cvs);
+                ctx = cvs.getContext("2d");
+                for(i=0;i<w;i++){
+                    for (j=0;j<h;j++){
+                        light=t[i][j];
+                        ctx.fillStyle="rgb("+(255-light*3%256)+","+(255-light*4%256)+","+(255-light*2%256)+")";
+                        ctx.fillRect(i,j,1,1);
+
+                    }
+                }
+            }
+            function mnozica(minRe, maksRe, minIm,maksIm, t, resRe,resIm){
+                var dRe=(maksRe-minRe)/resRe;
+                var dIm=(maksIm-minIm)/resIm;
+                var im,re,zIm,zRe,kIm,kRe,tmp,i;
+                for(re = 0;re<resRe;re++){
+                    t[re] = [];
+                    for(im=0;im<resIm;im++){
+                        kRe= minRe+dRe*re;
+                        kIm=minIm+dIm*im;
+                        zRe=0;
+                        zIm=0;
+                        for(i=0;i<50&&zRe*zRe+zIm*zIm<10;i++){
+                            tmp=zRe;
+                            zRe=zRe*zRe-zIm*zIm+kRe;
+                            zIm=2*zIm*tmp+kIm;
+                        }
+                        t[re][im]=255*i/50;
+                    }
+                }
+            }
+            function povecaj() {
+                getMousePos(canvas,event);
+                
+                a=((mouseX-800)/400)+(((mouseX-800)/400)/10);
+                b=((mouseX-800)/400)-(((mouseX-800)/400)/10);
+                c=((mouseY+400)/-400)+(((mouseY+400)/-400)/20);
+                d=((mouseY+400)/-400)-(((mouseY+400)/-400)/20);
+                console.log("levi rob: "+a+" desni rob: "+b+" zgornji rob: "+c+" spodnji rob: "+d)
+                t=[];
+                sir=1600;//3200 3000 3200 3200
+                vis=800;//1600 5000 3200 3200
+                //mnozica(levi rob,desni rob, zgornji rob, spodnji rob)
+                //ne dela! problem s ponastavitvijo koordinatnega sistema
+            
+            
+                mnozica(a,b,c,d,t,sir,vis)//(-3,1,-1,1), (0.2,0.5,0.2,0.7), (0.3,0.4,0.4,0.5), (0.34,0.36,0.42,0.44), (0.349,0.35,0.431,0.432), (0.349,0.3494,0.4312,0.4316), (0.34915,0.34916,0.43137,0.43138)
+                //alternativni seti: (-1.5,-1,-0.25,0.25)/1600,1600/    (-1.2,-1.3,0,0.1)/1600,1600/   (-1.25,-1.3,0.05,0.1)/3200,3200/   (-1.29,-1.3,0.085,0.095)/3200,3200/   (-1.29,-1.295,0.09,0.095)/3200,3200/   
+                pokazi(t,sir,vis);
+            
+            
+                return a, b, c, d;
+            }
+                a=-2
+                b=2
+                c=-1
+                d=1
+                t=[];
+                sir=1600;//3200 3000 3200 3200
+                vis=800;//1600 5000 3200 3200
+                //mnozica(levi rob,desni rob, zgornji rob, spodnji rob)
+            
+            
+                mnozica(a,b,c,d,t,sir,vis)//(-3,1,-1,1), (0.2,0.5,0.2,0.7), (0.3,0.4,0.4,0.5), (0.34,0.36,0.42,0.44), (0.349,0.35,0.431,0.432), (0.349,0.3494,0.4312,0.4316), (0.34915,0.34916,0.43137,0.43138)
+                //alternativni seti: (-1.5,-1,-0.25,0.25)/1600,1600/    (-1.2,-1.3,0,0.1)/1600,1600/   (-1.25,-1.3,0.05,0.1)/3200,3200/   (-1.29,-1.3,0.085,0.095)/3200,3200/   (-1.29,-1.295,0.09,0.095)/3200,3200/   
+                pokazi(t,sir,vis);
+            
+
+            
+        </script>
+        <p id='debugger'></p>
+        <p id='debugger1'></p>
+    </body>
+</html>
